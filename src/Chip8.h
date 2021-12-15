@@ -1,14 +1,19 @@
 #ifndef CHIP8_H
 #define CHIP8_H
 
+#include <iostream>
 #include <cstdint>
 #include <fstream>
 #include <random>
 #include <time.h>
+#include <string.h>
 
 const unsigned int START_ADDRESS = 0x200;
 const unsigned int FONTSET_SIZE = 80;
 const unsigned int FONTSET_START_ADDRESS = 0x50;
+const unsigned int VIDEO_WIDTH = 64;
+const unsigned int VIDEO_HEIGHT = 32;
+const unsigned int VIDEO_SIZE = VIDEO_WIDTH * VIDEO_HEIGHT;
 
 class Chip8 {
     private:
@@ -21,7 +26,7 @@ class Chip8 {
         uint8_t delayTimer {};
         uint8_t soundTimer {};
         uint8_t keypad[16] {};
-        uint32_t video[64 * 32] {};
+        uint32_t video[VIDEO_WIDTH * VIDEO_HEIGHT] {};
         uint16_t opcode {};
         std::default_random_engine randEngine;
 
@@ -29,6 +34,7 @@ class Chip8 {
         Chip8();
         void loadRom(std::string fileName);
         uint8_t getRandomNumber();
+        void emulateCycle();
 };
 
 #endif

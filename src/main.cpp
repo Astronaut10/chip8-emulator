@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-    Chip8 c;
-
+    Chip8* c = new Chip8();
+    
     return 0;
 }
