@@ -52,6 +52,10 @@ uint8_t Chip8::getRandomNumber() {
     return distribution(this->randEngine);
 }
 
+void Chip8::throwUnknownOpcode(uint16_t code) {
+    throw "Unknown opcode '" + to_string(code) + "'";
+}
+
 void Chip8::emulateCycle() {
     opcode = memory[pc] << 8 | memory[pc+1];
     pc += 2;
@@ -72,7 +76,7 @@ void Chip8::emulateCycle() {
                 case 0x0000:
                     break;
                 default:
-                    cout << "Unknown opcode: " + opcode << endl;
+                    throwUnknownOpcode(opcode);
                     break;
             }
             break;
@@ -148,7 +152,7 @@ void Chip8::emulateCycle() {
                     registers[vx] *= 2;
                     break;
                 default:
-                    // TODO: Throw error
+                    throwUnknownOpcode(opcode);
                     break;
             }
             break;
@@ -191,41 +195,77 @@ void Chip8::emulateCycle() {
         case 0xE000:
             switch (opcode & 0x00FF) {
                 case 0x009E:
-                    
+                    if (keypad[registers[vx]]) {
+                        pc += 2;
+                    }
                     break;
                 case 0x00A1:
-
+                    if (!keypad[registers[vx]]) {
+                        pc += 2;
+                    }
                     break;
                 default:
-                    // TODO
+                    throwUnknownOpcode(opcode);
                     break;
             }
             break;
         case 0xF000:
             switch(opcode & 0x00FF) {
                 case 0x0007:
+                    registers[vx] = delayTimer;
                     break;
                 case 0x000A:
+                    {
+                        bool found = false;
+                        int key = 0;
+                        while (!found) {
+                            for (key = 0; key < sizeof(keypad); ++key) {
+                                if (keypad[key]) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                        }
+                        registers[vx] = key;
+                    }
                     break;
                 case 0x0015:
+                    delayTimer = registers[vx];
                     break;
                 case 0x0018:
+                    soundTimer = registers[vx];
                     break;
                 case 0x001E:
+                    index += registers[vx];
                     break;
                 case 0x0029:
+                    index = FONTSET_START_ADDRESS + (5 * registers[vx]);
                     break;
                 case 0x0033:
+                    {
+                        uint8_t value = registers[vx];
+                        memory[index + 2] = value % 10;
+                        memory[index + 1] = value % 100;
+                        memory[index] = value - memory[index + 1]; 
+                    }
                     break;
                 case 0x0055:
+                    for (uint8_t i = 0 ; i < vx ; ++i) {
+                        memory[index + i] = registers[i];
+                    }
                     break;
                 case 0x0065:
+                    for (uint8_t i = 0 ; i < vx ; ++i) {
+                        registers[i] = memory[index + i];
+                    }
                     break;
                 default:
+                    throwUnknownOpcode(opcode);
                     break;
             }
             break;
         default:
+            throwUnknownOpcode(opcode);
             break;
     }
 }

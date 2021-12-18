@@ -30,6 +30,8 @@ class Chip8 {
         uint16_t opcode {};
         std::default_random_engine randEngine;
 
+        void throwUnknownOpcode(uint16_t code);
+
     public:
         Chip8();
         void loadRom(std::string fileName);
