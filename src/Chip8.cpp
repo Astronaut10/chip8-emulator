@@ -167,7 +167,26 @@ void Chip8::emulateCycle() {
             registers[vx] = getRandomNumber() & kk;
             break;
         case 0xD000:
+            {
+                uint8_t x = registers[vx] % VIDEO_WIDTH;
+                uint8_t y = registers[vy] % VIDEO_HEIGHT;
+                uint8_t height = opcode & 0x000F;
+                for (int row = 0 ; row < height ; ++row) {
+                    uint8_t sprite = memory[index + row];
+                    for (int column = 0 ; column < 8 ; ++column) {
+                        uint8_t pixel = sprite & (0x80 >> column);
 
+                        if (pixel) {
+                            uint32_t* videoPixel = &video[x + row + 
+                                ((y + column) * VIDEO_HEIGHT)];
+                            if (*videoPixel) {
+                                registers[0xF] = 1;
+                            }
+                            *videoPixel = 0xFFFFFFFF;
+                        }
+                    }
+                }
+            }
             break;
         case 0xE000:
             switch (opcode & 0x00FF) {
