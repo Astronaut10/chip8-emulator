@@ -268,4 +268,11 @@ void Chip8::emulateCycle() {
             throwUnknownOpcode(opcode);
             break;
     }
+
+    if (delayTimer > 0) {
+        --delayTimer;
+    }
+    if (soundTimer > 0) {
+        --soundTimer;
+    }
 }
