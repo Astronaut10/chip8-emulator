@@ -26,7 +26,7 @@ class Chip8 {
         uint8_t delayTimer {};
         uint8_t soundTimer {};
         uint8_t keypad[16] {};
-        uint32_t video[VIDEO_WIDTH * VIDEO_HEIGHT] {};
+        uint32_t video[VIDEO_SIZE] {};
         uint16_t opcode {};
         std::default_random_engine randEngine;
 

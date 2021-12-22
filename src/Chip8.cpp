@@ -24,7 +24,7 @@ Chip8::Chip8() : randEngine(time(0)) {
         0xF0, 0x80, 0xF0, 0x80, 0x80  // F
     };
 
-    for (int i = 0, j = FONTSET_START_ADDRESS ; i < FONTSET_SIZE ; ++i, ++j) {
+    for (unsigned int i = 0, j = FONTSET_START_ADDRESS ; i < FONTSET_SIZE ; ++i, ++j) {
         this->memory[j] = fontset[i];
     }
 
@@ -68,7 +68,7 @@ void Chip8::emulateCycle() {
         case 0x0000:
             switch (opcode & 0x00FF){
                 case 0x00E0:
-                    memset(video, 0, VIDEO_SIZE);
+                    memset(video, 0, sizeof(video));
                     break;
                 case 0x00EE:
                     pc = stack[--sp];
@@ -89,12 +89,12 @@ void Chip8::emulateCycle() {
             pc = opcode & nnn;
             break;
         case 0x3000:
-            if (registers[vx] == opcode & kk) {
+            if (registers[vx] == (opcode & kk)) {
                 pc +=2;
             }
             break;
         case 0x4000:
-            if (registers[vx] != opcode & kk) {
+            if (registers[vx] != (opcode & kk)) {
                 pc += 2;
             }
             break;
@@ -217,7 +217,7 @@ void Chip8::emulateCycle() {
                 case 0x000A:
                     {
                         bool found = false;
-                        int key = 0;
+                        unsigned int key = 0;
                         while (!found) {
                             for (key = 0; key < sizeof(keypad); ++key) {
                                 if (keypad[key]) {
