@@ -34,6 +34,8 @@ class Chip8 {
 
     public:
         Chip8();
+        uint8_t* getKeypad();
+        uint32_t* getVideo();
         void loadRom(std::string fileName);
         uint8_t getRandomNumber();
         void emulateCycle();

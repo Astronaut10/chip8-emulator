@@ -30,16 +30,28 @@ Chip8::Chip8() : randEngine(time(0)) {
 
 }
 
+uint8_t* Chip8::getKeypad() {
+    return keypad;
+}
+
+uint32_t* Chip8::getVideo() {
+    return video;
+}
+
 void Chip8::loadRom(string fileName) {
-    ifstream file(fileName, ios::binary | ios::ate);
+    ifstream file(fileName, ios::binary);
+    cout << fileName << endl;
     if (file.is_open()) {
         streampos size = file.tellg();
+        file.seekg(0, ios::end);
+        size = file.tellg() - size;
         char* block = new char[size];
         file.seekg(0, ios::beg);
         file.read(block, size);
         file.close();
-        
-        for (int i = 0 ; i < size ; i++) {
+        cout << size << endl;
+        for (int i = 0 ; i < size ; ++i) {
+            //cout << START_ADDRESS + i << endl;
             memory[START_ADDRESS + i] = block[i];
         }
         delete[] block;
@@ -99,7 +111,7 @@ void Chip8::emulateCycle() {
             }
             break;
         case 0x5000:
-            if (registers[vx] == registers[(opcode & 0x00F0) >> 4]) {
+            if (registers[vx] == registers[vy]) {
                 pc += 2;
             }
             break;
