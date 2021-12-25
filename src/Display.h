@@ -14,7 +14,7 @@ class Display {
         SDL_Window* window;
         SDL_Renderer* renderer;
         SDL_Texture* texture;
-        std::map<SDL_Keycode, uint8_t> keymap;
+        std::map<SDL_Keycode, unsigned int> keymap;
         
     public:
         Display(const char* title, int width, int height);

@@ -47,6 +47,9 @@ bool Display::handleInput(uint8_t *keypad) {
             return true;
         }
         else if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
+            if (event.key.keysym.sym == SDLK_ESCAPE) {
+                return true;
+            }
             keypad[keymap[event.key.keysym.sym]] 
                 = event.type == SDL_KEYDOWN ? 1 : 0;
         }
