@@ -64,8 +64,8 @@ uint8_t Chip8::getRandomNumber() {
 }
 
 void Chip8::throwUnknownOpcode(uint16_t code) {
-    cout << "Unknown opcode '" + to_string(code) + "'" << endl;
-    exit(1);
+    cerr << "Unknown opcode '" + to_string(code) + "'" << endl;
+    exit(EXIT_FAILURE);
 }
 
 void Chip8::emulateCycle() {
@@ -75,7 +75,7 @@ void Chip8::emulateCycle() {
     uint8_t vy = (opcode & 0x00F0) >> 4;
     uint8_t kk = opcode & 0x00FF;
     uint16_t nnn = opcode & 0x0FFF;
-    
+
     switch (opcode & 0xF000) {
         case 0x0000:
             switch (opcode & 0x00FF){

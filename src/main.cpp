@@ -6,10 +6,14 @@
 using namespace std;
 
 int main(int argc, char* args[]) {
-    string romFile = args[1];
+    if  (argc != 3) {
+        cerr << "Usage: " << "[Delay] [ROM]" << endl;
+        exit(EXIT_FAILURE);
+    }
+    int delay = stoi(args[1]);
+    string romFile = args[2];
     Chip8 chip8 = Chip8();
     Display display = Display("CHIP-8", VIDEO_WIDTH, VIDEO_HEIGHT);
-    int videoPitch = 4 * VIDEO_WIDTH;
     auto lastCycleTime = std::chrono::high_resolution_clock::now();
 	bool quit = false;
 
@@ -22,10 +26,10 @@ int main(int argc, char* args[]) {
                    std::chrono::milliseconds::period>
                    (currentTime - lastCycleTime).count();
         
-        if (dt > 4) {
+        if (dt > delay) {
             lastCycleTime = currentTime;
             chip8.emulateCycle();
-            display.update(chip8.getVideo(), videoPitch);
+            display.update(chip8.getVideo(), VIDEO_WIDTH);
         }
     }
 

@@ -56,7 +56,7 @@ bool Display::handleInput(uint8_t *keypad) {
 }
 
 void Display::update(uint32_t const* buffer, int pitch) {
-    SDL_UpdateTexture(texture, nullptr, buffer, pitch);
+    SDL_UpdateTexture(texture, nullptr, buffer, pitch * PITCH);
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
     SDL_RenderPresent(renderer);

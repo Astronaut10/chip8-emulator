@@ -7,6 +7,7 @@
 #include <map>
 
 const unsigned int SCALE = 10;
+const unsigned int PITCH = 4;
 
 class Display {
     private:
