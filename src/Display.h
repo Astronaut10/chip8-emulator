@@ -6,6 +6,8 @@
 #include <iostream>
 #include <map>
 
+const unsigned int SCALE = 10;
+
 class Display {
     private:
         SDL_Window* window;

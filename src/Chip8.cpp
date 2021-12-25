@@ -51,7 +51,6 @@ void Chip8::loadRom(string fileName) {
         file.close();
         cout << size << endl;
         for (int i = 0 ; i < size ; ++i) {
-            //cout << START_ADDRESS + i << endl;
             memory[START_ADDRESS + i] = block[i];
         }
         delete[] block;
@@ -65,17 +64,18 @@ uint8_t Chip8::getRandomNumber() {
 }
 
 void Chip8::throwUnknownOpcode(uint16_t code) {
-    throw "Unknown opcode '" + to_string(code) + "'";
+    cout << "Unknown opcode '" + to_string(code) + "'" << endl;
+    exit(1);
 }
 
 void Chip8::emulateCycle() {
-    opcode = memory[pc] << 8 | memory[pc+1];
+    opcode = (memory[pc] << 8) | memory[pc+1];
     pc += 2;
     uint8_t vx = (opcode & 0x0F00) >> 8;
     uint8_t vy = (opcode & 0x00F0) >> 4;
     uint8_t kk = opcode & 0x00FF;
     uint16_t nnn = opcode & 0x0FFF;
-
+    
     switch (opcode & 0xF000) {
         case 0x0000:
             switch (opcode & 0x00FF){
@@ -187,18 +187,19 @@ void Chip8::emulateCycle() {
                 uint8_t x = registers[vx] % VIDEO_WIDTH;
                 uint8_t y = registers[vy] % VIDEO_HEIGHT;
                 uint8_t height = opcode & 0x000F;
-                for (int row = 0 ; row < height ; ++row) {
+                registers[0xF] = 0;
+                for (unsigned int row = 0 ; row < height ; ++row) {
                     uint8_t sprite = memory[index + row];
-                    for (int column = 0 ; column < 8 ; ++column) {
+                    for (unsigned int column = 0 ; column < 8 ; ++column) {
                         uint8_t pixel = sprite & (0x80 >> column);
 
                         if (pixel) {
-                            uint32_t* videoPixel = &video[x + row + 
-                                ((y + column) * VIDEO_HEIGHT)];
+                            uint32_t* videoPixel = &video[x + column + 
+                                ((y + row) * VIDEO_WIDTH)];
                             if (*videoPixel) {
                                 registers[0xF] = 1;
                             }
-                            *videoPixel = 0xFFFFFFFF;
+                            *videoPixel ^= 0xFFFFFFFF;
                         }
                     }
                 }
@@ -257,17 +258,19 @@ void Chip8::emulateCycle() {
                     {
                         uint8_t value = registers[vx];
                         memory[index + 2] = value % 10;
-                        memory[index + 1] = value % 100;
-                        memory[index] = value - memory[index + 1]; 
+                        value /= 10;
+                        memory[index + 1] = value % 10;
+                        value /= 10;
+                        memory[index] = value % 10; 
                     }
                     break;
                 case 0x0055:
-                    for (uint8_t i = 0 ; i < vx ; ++i) {
+                    for (uint8_t i = 0 ; i <= vx ; ++i) {
                         memory[index + i] = registers[i];
                     }
                     break;
                 case 0x0065:
-                    for (uint8_t i = 0 ; i < vx ; ++i) {
+                    for (uint8_t i = 0 ; i <= vx ; ++i) {
                         registers[i] = memory[index + i];
                     }
                     break;

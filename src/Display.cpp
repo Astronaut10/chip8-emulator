@@ -9,9 +9,9 @@ Display::Display(const char* title, int width, int height) {
 
     window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, 
                               SDL_WINDOWPOS_CENTERED,
-                              width*2, height*2, SDL_WINDOW_SHOWN);
+                              width*SCALE, height*SCALE, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, 
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, 
                                 SDL_TEXTUREACCESS_STREAMING, width, height);
     keymap.emplace(SDLK_x, 0);
     keymap.emplace(SDLK_1, 1);

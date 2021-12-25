@@ -8,8 +8,8 @@ using namespace std;
 int main(int argc, char* args[]) {
     string romFile = args[1];
     Chip8 chip8 = Chip8();
-    Display display = Display("CHIP-8", 300, 300);
-    int videoPitch = 3 * VIDEO_WIDTH;
+    Display display = Display("CHIP-8", VIDEO_WIDTH, VIDEO_HEIGHT);
+    int videoPitch = 4 * VIDEO_WIDTH;
     auto lastCycleTime = std::chrono::high_resolution_clock::now();
 	bool quit = false;
 
@@ -22,7 +22,7 @@ int main(int argc, char* args[]) {
                    std::chrono::milliseconds::period>
                    (currentTime - lastCycleTime).count();
         
-        if (dt > 1) {
+        if (dt > 4) {
             lastCycleTime = currentTime;
             chip8.emulateCycle();
             display.update(chip8.getVideo(), videoPitch);
